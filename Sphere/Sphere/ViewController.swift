@@ -62,7 +62,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let sphere = SCNSphere(radius: 0.2)
         
         let material = SCNMaterial()
-        material.diffuse.contents = UIImage(named:"art.scnassets/moon.jpeg")
+        material.diffuse.contents = UIImage(named:"art.scnassets/earth.jpeg")
         sphere.materials = [material]
         
         let sphereNode = SCNNode()
@@ -85,6 +85,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.autoenablesDefaultLighting = true
         
     }
+    
     
     // MARK: - Remove Sphere Scene
     
@@ -127,6 +128,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         node.addChildNode(planeNode)
         
     }
+    
     
     // MARK: - Plane Rendering Method
     
