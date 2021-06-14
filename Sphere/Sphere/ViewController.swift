@@ -13,6 +13,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     @IBOutlet var sceneView: ARSCNView!
     
+    var sphereArray = [SCNNode]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,10 +23,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
-        
         sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         
-//        setupMoon()
     }
     
     func setupMoon(x: Float, y: Float, z: Float) {
@@ -39,14 +39,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sphereNode.position = SCNVector3Make(x, y + sphereNode.boundingSphere.radius, z)
         sphereNode.geometry = sphere
         
+        sphereArray.append(sphereNode)
         sceneView.scene.rootNode.addChildNode(sphereNode)
         
         let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi/2)
         let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi/2)
         
-        sphereNode.runAction(SCNAction.rotateBy(x: CGFloat(randomX * 5),
+        sphereNode.runAction(SCNAction.rotateBy(x: CGFloat(randomX * 3),
                                                 y: 0,
-                                                z: CGFloat(randomZ * 5),
+                                                z: CGFloat(randomZ * 3),
                                                 duration: 0.5))
         sceneView.autoenablesDefaultLighting = true
         
@@ -79,14 +80,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-       
+        
         if let touch = touches.first {
             
             let touchLocation = touch.location(in: sceneView)
             let results = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
             
             if let hitResult = results.first {
+                removeSphere()
                 setupMoon(x: hitResult.worldTransform.columns.3.x, y: hitResult.worldTransform.columns.3.y, z: hitResult.worldTransform.columns.3.z)
+            }
+        }
+    }
+    
+    func removeSphere() {
+        if !sphereArray.isEmpty {
+            for sphere in sphereArray {
+                sphere.removeFromParentNode()
             }
         }
     }
