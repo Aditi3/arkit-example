@@ -27,7 +27,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 //        setupMoon()
     }
     
-    func setupMoon() {
+    func setupMoon(x: Float, y: Float, z: Float) {
         
         let sphere = SCNSphere(radius: 0.2)
         
@@ -35,11 +35,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         material.diffuse.contents = UIImage(named:"art.scnassets/earth.jpeg")
         sphere.materials = [material]
         
-        let node = SCNNode()
-        node.position = SCNVector3Make(0, 0, -0.5)
-        node.geometry = sphere
+        let sphereNode = SCNNode()
+        sphereNode.position = SCNVector3Make(x, y + sphereNode.boundingSphere.radius, z)
+        sphereNode.geometry = sphere
         
-        sceneView.scene.rootNode.addChildNode(node)
+        sceneView.scene.rootNode.addChildNode(sphereNode)
         sceneView.autoenablesDefaultLighting = true
         
     }
@@ -70,10 +70,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+       
+        if let touch = touches.first {
+            
+            let touchLocation = touch.location(in: sceneView)
+            let results = sceneView.hitTest(touchLocation, types: .existingPlaneUsingExtent)
+            
+            if let hitResult = results.first {
+                setupMoon(x: hitResult.worldTransform.columns.3.x, y: hitResult.worldTransform.columns.3.y, z: hitResult.worldTransform.columns.3.z)
+            }
+        }
+    }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if anchor is ARPlaneAnchor {
-            print("plane detected")
             
             let planeAnchor = anchor as! ARPlaneAnchor
             
