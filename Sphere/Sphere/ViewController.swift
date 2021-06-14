@@ -40,6 +40,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sphereNode.geometry = sphere
         
         sceneView.scene.rootNode.addChildNode(sphereNode)
+        
+        let randomX = Float(arc4random_uniform(4) + 1) * (Float.pi/2)
+        let randomZ = Float(arc4random_uniform(4) + 1) * (Float.pi/2)
+        
+        sphereNode.runAction(SCNAction.rotateBy(x: CGFloat(randomX * 5),
+                                                y: 0,
+                                                z: CGFloat(randomZ * 5),
+                                                duration: 0.5))
         sceneView.autoenablesDefaultLighting = true
         
     }
